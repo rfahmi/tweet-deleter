@@ -108,6 +108,6 @@ if (key) {
   start(key);
 } else {
   console.warn(
-    '\x1b[33m⚠️  Batch key is required. Usage: node delete-tweets.js --batch <key>\x1b[0m'
+    '\x1b[33m⚠️ Batch key is required. Usage: node delete-tweets.js --batch <key>\x1b[0m'
   );
 }
