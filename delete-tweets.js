@@ -10,7 +10,7 @@ const CONSUMER_KEY = process.env.CONSUMER_KEY;
 const CONSUMER_SECRET = process.env.CONSUMER_SECRET;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
-const TWEET_IDS_FILE = process.env.TWEET_IDS_FILE;
+const TWEET_IDS_FILE = "./files/tweets.json";
 
 // Create an OAuth 1.0a instance
 const oauth = OAuth({
