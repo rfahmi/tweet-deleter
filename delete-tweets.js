@@ -44,12 +44,14 @@ async function deleteTweet(tweetId) {
       },
     });
     console.info(`\x1b[32m✅ Tweet ${tweetId} deleted successfully\x1b[0m`);
+    return true;
   } catch (error) {
     console.error(
       `\x1b[31m❌ Error deleting tweet ${tweetId}:`,
       error.response ? error?.response?.data?.detail : error.message,
       "\x1b[0m"
     );
+    return false;
   }
 }
 
