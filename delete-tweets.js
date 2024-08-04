@@ -86,9 +86,6 @@ async function start(key) {
       if (success) {
         tweets[key] = tweets[key].filter((id) => id !== tweetId);
         await writeTweetsToFile(tweets);
-        console.log(
-          `Deleted tweet with ID: ${tweetId} and updated tweets.json`
-        );
       }
       await delay(800); // Wait for x ms
     }
