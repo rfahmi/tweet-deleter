@@ -3,7 +3,7 @@ const OAuth = require("oauth-1.0a");
 const crypto = require("crypto");
 const fs = require("fs").promises;
 
-require('dotenv').config();
+require("dotenv").config();
 
 // Set your Twitter API credentials
 const CONSUMER_KEY = process.env.CONSUMER_KEY;
@@ -66,7 +66,9 @@ async function getTweetIdsFromFile(key) {
     return { tweets, tweetIds: tweets[key] };
   } catch (error) {
     if (error.code === "ENOENT") {
-      throw new Error(`\x1b[31m${TWEET_IDS_FILE} does not exist, please run get-tweet-ids.js first\x1b[0m`);
+      throw new Error(
+        `\x1b[31m${TWEET_IDS_FILE} does not exist, please run get-tweet-ids.js first\x1b[0m`
+      );
     }
     throw error;
   }
@@ -80,14 +82,25 @@ async function writeTweetsToFile(tweets) {
 async function start(key) {
   try {
     const { tweets, tweetIds } = await getTweetIdsFromFile(key);
-
-    for (const tweetId of tweetIds) {
+    for (let i = 0; i < tweetIds.length; i++) {
+      const tweetId = tweetIds[i];
       const success = await deleteTweet(tweetId); // Ensure the deleteTweet function returns a promise
       if (success) {
         tweets[key] = tweets[key].filter((id) => id !== tweetId);
         await writeTweetsToFile(tweets);
+        await delay(800); // Wait for 800 ms
+      } else {
+        let loading = 0;
+        const loadingChars = "\\|/-";
+        const loadingInterval = setInterval(() => {
+          process.stdout.write(`\rProcess is paused for 24 hours...${loadingChars[loading]}`);
+          loading = (loading + 1) % loadingChars.length;
+        }, 500);
+        await delay(24 * 60 * 60 * 1000);
+        clearInterval(loadingInterval);
+        process.stdout.write("\r\n");
+        i--; // Decrement the index to retry the current tweetId
       }
-      await delay(800); // Wait for x ms
     }
   } catch (error) {
     console.error("Error processing tweets:", error);
@@ -96,7 +109,9 @@ async function start(key) {
 
 // Parse command-line arguments
 const args = process.argv.slice(2);
-const batchArgIndex = args.findIndex((arg) => arg === "--batch" || arg === "-b");
+const batchArgIndex = args.findIndex(
+  (arg) => arg === "--batch" || arg === "-b"
+);
 let key = null;
 
 if (batchArgIndex !== -1 && args[batchArgIndex + 1]) {
@@ -107,6 +122,6 @@ if (key) {
   start(key);
 } else {
   console.warn(
-    '\x1b[33m⚠️ Batch key is required. Usage: node delete-tweets.js --batch <key>\x1b[0m'
+    "\x1b[33m⚠️ Batch key is required. Usage: node delete-tweets.js --batch <key>\x1b[0m"
   );
 }
